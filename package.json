@@ -5,8 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "preinstall": "vue-cli-service build"
+    "lint": "vue-cli-service lint"
   },
   "bin": {
     "vidcom": "./bin/vidcom.js"
@@ -18,7 +17,9 @@
     "http-server": "^0.11.1",
     "open": "^6.4.0",
     "vue": "^2.6.10",
-    "yargs": "^14.2.0",
+    "yargs": "^14.2.0"
+  },
+  "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
@@ -28,8 +29,6 @@
     "html-webpack-inline-source-plugin": "latest",
     "html-webpack-plugin": "latest",
     "vue-template-compiler": "^2.6.10"
-  },
-  "devDependencies": {
   },
   "eslintConfig": {
     "root": true,
