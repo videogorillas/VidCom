@@ -1,6 +1,6 @@
 ## Installation
 ```
-npm install -g videogorillas/vidcom
+npm install -g --production videogorillas/vidcom
 ```
 
 ## Usage
