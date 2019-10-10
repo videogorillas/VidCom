@@ -26,18 +26,46 @@
                 required: false,
                 default: false,
             },
+            controls: {
+                type: Boolean,
+                required: false,
+                default: true,
+            },
             url: String,
         },
+        data: function () {
+            return {
+                player: null,
+                video: null,
+            }
+        },
+        watch: {
+            url: function(newVal) {
+                this.player.loadUrl(newVal, (err) => {
+                    this.$emit("loadUrl", err);
+                });
+            }
+        },
         mounted: function () {
-            const player = new VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys});
-            const video = this.$refs.container.querySelector("video");
+            this.player = new VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys});
+            this.video = this.$refs.container.querySelector("video");
+
+        //     const track = document.createElement("track");
+        //     track.kind="subtitles";
+        //     track.src = "subtitles.srt";
+        //     track.label = "Test";
+        // // <track label="English" kind="subtitles" src="sub/vid_sub.vtt" srclang="en">
+        //     this.video.appendChild(track);
+
+            const player = this.player;
+            const video = this.video;
 
             video.addEventListener("resize", () => {
                 resizeOverlay(this.$refs.overlay, video);
                 this.$emit("videoSize", video.videoWidth, video.videoHeight);
             });
 
-            video.controls = true;
+            video.controls = this.$props.controls;
 
             video.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -47,10 +75,6 @@
                 video.blur();
             });
 
-            player.loadUrl(this.$props.url, (err) => {
-                this.$emit("loadUrl", err);
-            });
-
             player.addEventListener("error", (err) => {
                 this.$emit("error", err);
             });
@@ -58,14 +82,28 @@
             player.addEventListener("load", (player) => {
                 this.$emit("load", player);
 
+                player.addEventListener("play", (isPlaying) => {
+                    this.$emit("play", isPlaying);
+                });
+
                 let lastFrame = -1;
+                let isSeeking = false;
+                video.addEventListener("seeking", () => {
+                    isSeeking = true;
+                });
+                video.addEventListener("seeked", function (self) {
+                    isSeeking = false;
+                    self.$emit("frameChange", player.getCurrentFrame());
+                }.bind(this, this));
                 const update = function(self) {
                     window.requestAnimationFrame(update.bind(self, self));
                     if (lastFrame === player.getCurrentFrame()) {
                         return;
                     }
                     lastFrame = player.getCurrentFrame();
-                    self.$emit("frameChange", player.getCurrentFrame());
+                    if (!isSeeking) {
+                        self.$emit("frameChange", player.getCurrentFrame());
+                    }
                 };
                 window.requestAnimationFrame(update.bind(this, this));
             });
@@ -77,6 +115,25 @@
             window.addEventListener("resize", () => {
                 resizeOverlay(this.$refs.overlay, video); //TODO: remove listener
             });
+        },
+        methods: {
+            play: function() {
+                return this.player && this.player.play();
+            },
+            seekFrame: function(fn) {
+                return this.player && this.player.seekFrame(fn);
+            },
+            getFrame: function() {
+                return this.player && this.player.getCurrentFrame();
+            },
+            getTapeTimecode: function() {
+                return this.player && this.player.getCurrentTapeTimecode();
+            },
+            isPlaying: function() {
+                // eslint-disable-next-line no-console
+                // console.log(video, video.paused);
+                return this.video && !this.video.paused;
+            }
         }
     }
 </script>

@@ -5,12 +5,20 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "preinstall": "vue-cli-service build"
+  },
+  "bin": {
+    "vidcom": "./bin/vidcom.js"
   },
   "dependencies": {
     "@sysval/vgplayer-core": "^0.4.31",
     "core-js": "^2.6.5",
-    "vue": "^2.6.10"
+    "express": "^4.17.1",
+    "http-server": "^0.11.1",
+    "open": "^6.4.0",
+    "vue": "^2.6.10",
+    "yargs": "^14.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.11.0",
@@ -19,6 +27,8 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "html-webpack-inline-source-plugin": "latest",
+    "html-webpack-plugin": "latest",
     "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
