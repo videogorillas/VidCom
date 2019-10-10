@@ -18,9 +18,7 @@
     "http-server": "^0.11.1",
     "open": "^6.4.0",
     "vue": "^2.6.10",
-    "yargs": "^14.2.0"
-  },
-  "devDependencies": {
+    "yargs": "^14.2.0",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
@@ -30,6 +28,8 @@
     "html-webpack-inline-source-plugin": "latest",
     "html-webpack-plugin": "latest",
     "vue-template-compiler": "^2.6.10"
+  },
+  "devDependencies": {
   },
   "eslintConfig": {
     "root": true,

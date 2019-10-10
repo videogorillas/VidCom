@@ -1,29 +1,9 @@
-# vidcom
-
-## Project setup
+## Installation
 ```
-npm install
+npm install -g videogorillas/vidcom
 ```
 
-### Compiles and hot-reloads for development
+## Usage
 ```
-npm run serve
+vidcom /path/to/video1.mp4 /path/to/video2.mp4
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
