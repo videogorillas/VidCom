@@ -1,5 +1,5 @@
 <template>
-  <div ref="app" id="app" v-bind:class="{ notMatching: frame !== frameLowres }">
+  <div ref="app" id="app">
     <div class="timecode">{{timecode}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{frame}}</div>
     <VGPlayer class="hires"
               ref="hires"
@@ -128,12 +128,5 @@ export default {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    transition: filter;
-    transition-duration: 0.1s;
-  }
-
-  .notMatching .lowres {
-    /*opacity: ;*/
-    filter: opacity(0.2);
   }
 </style>
