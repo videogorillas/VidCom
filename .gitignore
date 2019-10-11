@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /testdata
+public/video*.mp4
+bin/dist/video*.mp4
 
 # local env files
 .env.local

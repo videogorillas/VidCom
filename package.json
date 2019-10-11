@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && cp ./dist/index.html ./bin/dist/ && rm -rf dist",
+    "build": "vue-cli-service build && cp -a ./dist ./bin/ && rm -rf dist && rm -rf bin/dist/js",
     "lint": "vue-cli-service lint"
   },
   "bin": {
