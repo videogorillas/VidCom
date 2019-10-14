@@ -31,8 +31,8 @@ export default {
   data: () => {
     return {
       publicPath: process.env.BASE_URL,
-      url1: "",
-      url2: "",
+      url1: "video1.mp4",
+      url2: "video2.mp4",
       subtitles: "./subtitles.srt",
       slider: 50,
       frame: 0,
@@ -62,9 +62,6 @@ export default {
     }
   },
   mounted: function() {
-    this.url1 = window.url1 || "video1.mp4";
-    this.url2 = window.url2 || "video2.mp4";
-
     this.$refs.hires.video.addEventListener("click", (e) => {
       e.preventDefault();
     });

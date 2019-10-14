@@ -44,19 +44,16 @@
                 video: null,
             }
         },
-        watch: {
-            url: function(newVal) {
-                this.player.loadUrl(newVal, (err) => {
-                    this.$emit("loadUrl", err);
-                    if (this.$props.subtitles) {
-                        this.addCaptions(this.$props.subtitles);
-                    }
-                });
-            }
-        },
         mounted: function () {
             this.player = new window.VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys, theme: "vg"});
             this.video = this.$refs.container.querySelector("video");
+
+            this.player.loadUrl(this.$props.url, (err) => {
+                this.$emit("loadUrl", err);
+                if (this.$props.subtitles) {
+                    this.addCaptions(this.$props.subtitles);
+                }
+            });
 
             const player = this.player;
             const video = this.video;
