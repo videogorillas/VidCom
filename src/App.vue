@@ -5,6 +5,8 @@
               ref="hires"
               :url="`${url1}`"
               :subtitles="`${subtitles}`"
+              v-bind:startFrame="startFrame"
+              v-bind:endFrame="endFrame"
               v-bind:hotkeys="true"
               v-on:frameChange="onFrameChange"
               v-on:videoSize="onVideoSize"
@@ -16,6 +18,8 @@
       <VGPlayer ref="lores"
                 class="lowres"
                 :url="`${url2}`"
+                v-bind:startFrame="startFrame"
+                v-bind:endFrame="endFrame"
                 v-bind:style="{width: videoWidth + `px`, height: videoHeight + `px`}"
                 v-on:frameChange="onLowresFrameChange"
                 v-bind:controls="false"/>
@@ -42,7 +46,9 @@ export default {
       frameLowres: 0,
       timecode: "",
       videoWidth: 0,
-      videoHeight: 0
+      videoHeight: 0,
+      startFrame: 0,
+      endFrame: -1
     }
   },
   methods: {

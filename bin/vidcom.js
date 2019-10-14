@@ -7,6 +7,14 @@ const path = require('path');
 const fs = require('fs');
 
 const _ = yargs
+    .option("start-frame", {
+        default: 0,
+        type: "number"
+    })
+    .option("end-frame", {
+        default: -1,
+        type: "number"
+    })
     .command(["serve <video1> <video2> [srt]", "$0"], "Start local server", (yargs) => {
         yargs.option("port", {
             default: 8042,
@@ -19,7 +27,11 @@ const _ = yargs
         const path0 = path.parse(path.resolve(process.cwd(), argv.video1));
         const path1 = path.parse(path.resolve(process.cwd(), argv.video2));
 
-        app.get('/', (req, res) => res.sendFile("./dist/index.html", { root: __dirname }));
+        let html = fs.readFileSync("./dist/index.html").toString();
+        html = html.replace(`startFrame:0`, `startFrame:${argv.startFrame}`)
+            .replace(`endFrame:-1`, `endFrame:${argv.endFrame}`);
+
+        app.get('/', (req, res) => res.send(html));
         app.get('/video1.mp4', (req, res) => res.sendFile(path0.base, { root: path0.dir }));
         app.get('/video2.mp4', (req, res) => res.sendFile(path1.base, { root: path1.dir }));
 
@@ -45,7 +57,9 @@ const _ = yargs
         const outdir = path.resolve(process.cwd(), argv.outdir);
         let html = fs.readFileSync("./dist/index.html").toString();
         html = html.replace(`url1:"video1.mp4"`, `url1:"${argv.video1}"`)
-            .replace(`url2:"video2.mp4"`, `url2:"${argv.video2}"`);
+            .replace(`url2:"video2.mp4"`, `url2:"${argv.video2}"`)
+            .replace(`startFrame:0`, `startFrame:${argv.startFrame}`)
+            .replace(`endFrame:-1`, `endFrame:${argv.endFrame}`);
         if (argv.srt) {
             html = html.replace(`subtitles:"./subtitles.srt"`, `subtitles:"${argv.srt}"`)
         }

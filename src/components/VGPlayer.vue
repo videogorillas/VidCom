@@ -37,6 +37,16 @@
                 type: String,
                 required: false
             },
+            startFrame: {
+                type: Number,
+                required: false,
+                default: 0
+            },
+            endFrame: {
+                type: Number,
+                required: false,
+                default: -1
+            },
         },
         data: function () {
             return {
@@ -52,6 +62,11 @@
                 this.$emit("loadUrl", err);
                 if (this.$props.subtitles) {
                     this.addCaptions(this.$props.subtitles);
+                }
+
+                if (this.$props.startFrame > 0 || this.$props.endFrame >= 0) {
+                    const endFrame = this.$props.endFrame === -1 ? this.player.getTimeline().getLastFrame() : this.$props.endFrame;
+                    this.player.setRange(this.$props.startFrame, endFrame)
                 }
             });
 
