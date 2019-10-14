@@ -7,13 +7,16 @@
               :subtitles="`${subtitles}`"
               v-bind:hotkeys="true"
               v-on:frameChange="onFrameChange"
+              v-on:videoSize="onVideoSize"
               v-on:play="onPlay"/>
     <div class="divider"
          v-bind:style="{left: slider + `%`}"></div>
-    <div class="lowres"
+    <div class="lowres_container"
          v-bind:style="{webkitClipPath: `inset(0 0 0 ` + slider + `%)`}">
       <VGPlayer ref="lores"
+                class="lowres"
                 :url="`${url2}`"
+                v-bind:style="{width: videoWidth + `px`, height: videoHeight + `px`}"
                 v-on:frameChange="onLowresFrameChange"
                 v-bind:controls="false"/>
     </div>
@@ -37,7 +40,9 @@ export default {
       slider: 50,
       frame: 0,
       frameLowres: 0,
-      timecode: ""
+      timecode: "",
+      videoWidth: 0,
+      videoHeight: 0
     }
   },
   methods: {
@@ -58,7 +63,11 @@ export default {
       this.$refs.lores.seekFrame(frame);
     },
     updateSlider: function(e) {
-      this.slider = e.clientX / document.body.clientWidth * 100;
+      this.slider = e.offsetX / this.$refs.app.clientWidth * 100;
+    },
+    onVideoSize: function(width, height) {
+      this.videoWidth = width;
+      this.videoHeight = height;
     }
   },
   mounted: function() {
@@ -70,7 +79,7 @@ export default {
         this.updateSlider(e);
       }
     });
-    this.$refs.app.addEventListener("mouseup", (e) => {
+    window.addEventListener("mouseup", (e) => {
       this.sliding = false;
       this.updateSlider(e);
     });
@@ -89,12 +98,22 @@ export default {
     background-color: black;
   }
 
+  .hires video {
+    width: auto !important;
+    height: auto !important;
+  }
+
+  #app {
+    position: absolute;
+  }
+
   .divider {
-    position: fixed;
+    position: absolute;
     width: 1px;
     border-left: 1px solid black;
     height: 100%;
     z-index: 1;
+    top: 0;
   }
 
   .hires video::-webkit-media-controls {
@@ -103,9 +122,9 @@ export default {
 
   .timecode {
     transform: translateX(-50%);
-    position: fixed;
+    position: absolute;
     left: 50%;
-    top: 50px;
+    top: 5%;
     padding: 5px;
     background: black;
     color: white;
@@ -121,10 +140,16 @@ export default {
     vertical-align: middle;
   }
 
-  .lowres {
-    position: fixed;
+  .hires video {
+    object-fit: none;
+  }
+
+  .lowres_container {
+    position: absolute;
     width: 100%;
     height: 100%;
     pointer-events: none;
+    top: 0;
+    left: 0;
   }
 </style>
