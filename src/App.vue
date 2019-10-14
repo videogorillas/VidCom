@@ -4,6 +4,7 @@
     <VGPlayer class="hires"
               ref="hires"
               :url="`${url1}`"
+              :subtitles="`${subtitles}`"
               v-bind:hotkeys="true"
               v-on:frameChange="onFrameChange"
               v-on:play="onPlay"/>
@@ -32,6 +33,7 @@ export default {
       publicPath: process.env.BASE_URL,
       url1: "",
       url2: "",
+      subtitles: "./subtitles.srt",
       slider: 50,
       frame: 0,
       frameLowres: 0,
@@ -87,8 +89,6 @@ export default {
   body, html {
     padding: 0;
     margin: 0;
-    width: 100%;
-    height: 100%;
     background-color: black;
   }
 
@@ -99,6 +99,7 @@ export default {
     height: 100%;
     z-index: 1;
   }
+
   .hires video::-webkit-media-controls {
     z-index: 2;
   }

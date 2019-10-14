@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build && cp -a ./dist ./bin/ && rm -rf dist && rm -rf bin/dist/js",
+    "build": "rm -rf ./bin/dist && vue-cli-service build && cp -a ./dist ./bin/ && rm -rf dist && rm -rf bin/dist/js",
     "lint": "vue-cli-service lint"
   },
   "bin": {
@@ -13,13 +13,11 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "express": "^4.17.1",
-    "http-server": "^0.11.1",
     "open": "^6.4.0",
     "vue": "^2.6.10",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "@sysval/vgplayer-core": "^0.4.31",
     "@vue/cli-plugin-babel": "^3.11.0",
     "@vue/cli-plugin-eslint": "^3.11.0",
     "@vue/cli-service": "^3.11.0",

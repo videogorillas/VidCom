@@ -2,7 +2,9 @@
 node_modules
 /testdata
 public/video*.mp4
+public/*.srt
 bin/dist/video*.mp4
+bin/dist/*.srt
 
 # local env files
 .env.local

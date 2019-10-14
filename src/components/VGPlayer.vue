@@ -8,7 +8,8 @@
 </template>
 
 <script>
-    const VG = require("@sysval/vgplayer-core");
+    // eslint-disable-next-line
+    import * as _ from "@/vgplayer";
 
     const resizeOverlay = function(overlay, video) {
         const ar = video.videoWidth / video.videoHeight;
@@ -32,6 +33,10 @@
                 default: true,
             },
             url: String,
+            subtitles: {
+                type: String,
+                required: false
+            },
         },
         data: function () {
             return {
@@ -43,19 +48,15 @@
             url: function(newVal) {
                 this.player.loadUrl(newVal, (err) => {
                     this.$emit("loadUrl", err);
+                    if (this.$props.subtitles) {
+                        this.addCaptions(this.$props.subtitles);
+                    }
                 });
             }
         },
         mounted: function () {
-            this.player = new VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys});
+            this.player = new window.VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys, theme: "vg"});
             this.video = this.$refs.container.querySelector("video");
-
-        //     const track = document.createElement("track");
-        //     track.kind="subtitles";
-        //     track.src = "subtitles.srt";
-        //     track.label = "Test";
-        // // <track label="English" kind="subtitles" src="sub/vid_sub.vtt" srclang="en">
-        //     this.video.appendChild(track);
 
             const player = this.player;
             const video = this.video;
@@ -130,9 +131,17 @@
                 return this.player && this.player.getCurrentTapeTimecode();
             },
             isPlaying: function() {
-                // eslint-disable-next-line no-console
-                // console.log(video, video.paused);
                 return this.video && !this.video.paused;
+            },
+            addCaptions: function(url) {
+                const codec = window.VG.Captions.guessSubtitleCodec(url);
+                const self = this;
+                window.VG.Captions.parseSubs(this.player.getTimeline(), url, codec, function (err, subs) {
+                    if (err) {
+                        throw ["error parsing subs", err];
+                    }
+                    self.player.addCaptions(subs);
+                })
             }
         }
     }
@@ -165,5 +174,24 @@
 
     .vg_player_opacity_0 {
         pointer-events: none;
+    }
+
+    .vg_time_controls_box, .vg_invisible, .vg_allControls {
+        display: none;
+    }
+
+    .vg_captionText:not(:empty) {
+        font-family: monospace;
+        position: absolute;
+        max-width: 75%;
+        padding: 10px;
+        font-size: 11px;
+        background-color: black;
+        color: white;
+        bottom: 75px;
+        z-index: 2;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
     }
 </style>
