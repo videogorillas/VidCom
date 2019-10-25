@@ -27,7 +27,7 @@ const _ = yargs
         const path0 = path.parse(path.resolve(process.cwd(), argv.video1));
         const path1 = path.parse(path.resolve(process.cwd(), argv.video2));
 
-        let html = fs.readFileSync("./dist/index.html").toString();
+        let html = fs.readFileSync(path.resolve(__dirname, "./dist/index.html")).toString();
         html = html.replace(`startFrame:0`, `startFrame:${argv.startFrame}`)
             .replace(`endFrame:-1`, `endFrame:${argv.endFrame}`);
 
@@ -55,7 +55,7 @@ const _ = yargs
         })
     }, (argv) => {
         const outdir = path.resolve(process.cwd(), argv.outdir);
-        let html = fs.readFileSync("./dist/index.html").toString();
+        let html = fs.readFileSync(path.resolve(__dirname, "./dist/index.html")).toString();
         html = html.replace(`url1:"video1.mp4"`, `url1:"${argv.video1}"`)
             .replace(`url2:"video2.mp4"`, `url2:"${argv.video2}"`)
             .replace(`startFrame:0`, `startFrame:${argv.startFrame}`)
