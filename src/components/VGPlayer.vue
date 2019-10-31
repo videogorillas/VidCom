@@ -47,6 +47,11 @@
                 required: false,
                 default: -1
             },
+            initialFrame: {
+                type: Number,
+                required: false,
+                default: 0
+            },
         },
         data: function () {
             return {
@@ -60,6 +65,7 @@
 
             this.player.loadUrl(this.$props.url, (err) => {
                 this.$emit("loadUrl", err);
+                this.player.seekFrame(this.$props.initialFrame);
                 if (this.$props.subtitles) {
                     this.addCaptions(this.$props.subtitles);
                 }

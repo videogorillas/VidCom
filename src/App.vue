@@ -6,6 +6,7 @@
               :url="`${url1}`"
               :subtitles="`${subtitles}`"
               v-bind:startFrame="startFrame"
+              v-bind:initialFrame="initialFrame"
               v-bind:endFrame="endFrame"
               v-bind:hotkeys="true"
               v-on:frameChange="onFrameChange"
@@ -29,6 +30,7 @@
 
 <script>
 import VGPlayer from "@/components/VGPlayer";
+const getParams = new URLSearchParams(location.search);
 
 export default {
   name: 'app',
@@ -38,9 +40,9 @@ export default {
   data: () => {
     return {
       publicPath: process.env.BASE_URL,
-      url1: "video1.mp4",
-      url2: "video2.mp4",
-      subtitles: "./subtitles.srt",
+      url1: getParams.get("url1") || "video1.mp4",
+      url2: getParams.get("url2") || "video2.mp4",
+      subtitles: getParams.get("srt") || "./subtitles.srt",
       slider: 50,
       frame: 0,
       frameLowres: 0,
@@ -48,7 +50,8 @@ export default {
       videoWidth: 0,
       videoHeight: 0,
       startFrame: 0,
-      endFrame: -1
+      endFrame: -1,
+      initialFrame: parseInt(getParams.get("fn")) || 0
     }
   },
   methods: {

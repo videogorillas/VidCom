@@ -56,12 +56,12 @@ const _ = yargs
     }, (argv) => {
         const outdir = path.resolve(process.cwd(), argv.outdir);
         let html = fs.readFileSync(path.resolve(__dirname, "./dist/index.html")).toString();
-        html = html.replace(`url1:"video1.mp4"`, `url1:"${argv.video1}"`)
-            .replace(`url2:"video2.mp4"`, `url2:"${argv.video2}"`)
+        html = html.replace(`"video1.mp4"`, `"${argv.video1}"`)
+            .replace(`"video2.mp4"`, `"${argv.video2}"`)
             .replace(`startFrame:0`, `startFrame:${argv.startFrame}`)
             .replace(`endFrame:-1`, `endFrame:${argv.endFrame}`);
         if (argv.srt) {
-            html = html.replace(`subtitles:"./subtitles.srt"`, `subtitles:"${argv.srt}"`)
+            html = html.replace(`"./subtitles.srt"`, `"${argv.srt}"`)
         }
         fs.writeFileSync(path.resolve(outdir, argv.filename), html);
     })
