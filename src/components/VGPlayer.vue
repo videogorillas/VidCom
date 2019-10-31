@@ -174,10 +174,15 @@
         background: black;
         margin: 0;
         padding: 0;
+        height: 100%;
     }
 </style>
 
 <style>
+    .vg_player video {
+        object-fit: fill;
+    }
+
     .vg_player_opacity_0 {
         pointer-events: none;
     }
@@ -199,5 +204,9 @@
         left: 50%;
         transform: translateX(-50%);
         text-align: center;
+    }
+
+    .vg_playerContainer, .vg_embed-container, .vg_player {
+        height: 100%;
     }
 </style>
