@@ -93,6 +93,11 @@ export default {
       this.sliding = true;
       this.updateSlider(e);
     });
+    window.addEventListener("keydown", (e) => {
+      if(e.key.toLowerCase().indexOf("arrow") >= 0) {
+        e.preventDefault();
+      }
+    });
   }
 }
 </script>
