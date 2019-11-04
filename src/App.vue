@@ -43,7 +43,7 @@ export default {
       url1: getParams.get("url1") || "video1.mp4",
       url2: getParams.get("url2") || "video2.mp4",
       subtitles: getParams.get("srt") || "./subtitles.srt",
-      slider: 50,
+      slider: typeof parseFloat(getParams.get("slider")) === "number" ? parseFloat(getParams.get("slider")) : 50,
       frame: 0,
       frameLowres: 0,
       timecode: "",
@@ -64,6 +64,9 @@ export default {
       this.frameLowres = frame;
     },
     onFrameChange: function(frame) {
+      const query = new URLSearchParams(location.search);
+      query.set("fn", frame);
+      history.pushState(null, null, "?" + query.toString());
       this.frame = frame;
       this.timecode = this.$refs.hires.getTapeTimecode();
       if (this.$refs.hires.isPlaying()) {
@@ -73,6 +76,9 @@ export default {
     },
     updateSlider: function(e) {
       this.slider = e.offsetX / this.$refs.app.clientWidth * 100;
+      const query = new URLSearchParams(location.search);
+      query.set("slider", "" + Math.round(this.slider * 10000) / 10000);
+      history.pushState(null, null, "?" + query.toString());
     },
     onVideoSize: function(width, height) {
       this.videoWidth = width;
