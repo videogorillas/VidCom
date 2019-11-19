@@ -14,3 +14,5 @@ vidcom generate /path/to/video1.mp4 /path/to/video2.mp4 [/path/to/subtitles.srt]
 `fn` - initial frame
 
 `url1`, `url2` - video urls
+
+`srt` - subtitles url
