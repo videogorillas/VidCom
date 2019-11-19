@@ -57,6 +57,7 @@
             return {
                 player: null,
                 video: null,
+                loaded: false,
             }
         },
         mounted: function () {
@@ -65,6 +66,7 @@
 
             this.player.loadUrl(this.$props.url, (err) => {
                 this.$emit("loadUrl", err);
+                this.loaded = true;
                 this.player.seekFrame(this.$props.initialFrame);
                 if (this.$props.subtitles) {
                     this.addCaptions(this.$props.subtitles);
@@ -137,16 +139,19 @@
         },
         methods: {
             play: function() {
-                return this.player && this.player.play();
+                return this.player && this.loaded && this.player.play();
+            },
+            pause: function() {
+                return this.player && this.loaded && this.player.pause();
             },
             seekFrame: function(fn) {
-                return this.player && this.player.seekFrame(fn);
+                return this.player && this.loaded && this.player.seekFrame(fn);
             },
             getFrame: function() {
-                return this.player && this.player.getCurrentFrame();
+                return this.player && this.loaded && this.player.getCurrentFrame();
             },
             getTapeTimecode: function() {
-                return this.player && this.player.getCurrentTapeTimecode();
+                return this.player && this.loaded && this.player.getCurrentTapeTimecode();
             },
             isPlaying: function() {
                 return this.video && !this.video.paused;

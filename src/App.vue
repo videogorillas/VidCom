@@ -15,7 +15,7 @@
     <div class="divider"
          v-bind:style="{left: slider + `%`}"></div>
     <div class="lowres_container"
-         v-bind:style="{webkitClipPath: `inset(0 0 0 ` + slider + `%)`}">
+         v-bind:style="{clipPath: `inset(0 0 0 ` + slider + `%)`}">
       <VGPlayer ref="lores"
                 class="lowres"
                 :url="`${url2}`"
@@ -43,7 +43,7 @@ export default {
       url1: getParams.get("url1") || "video1.mp4",
       url2: getParams.get("url2") || "video2.mp4",
       subtitles: getParams.get("srt") || "./subtitles.srt",
-      slider: typeof parseFloat(getParams.get("slider")) === "number" ? parseFloat(getParams.get("slider")) : 50,
+      slider: !isNaN(parseFloat(getParams.get("slider"))) ? parseFloat(getParams.get("slider")) : 50,
       frame: 0,
       frameLowres: 0,
       timecode: "",
@@ -56,17 +56,17 @@ export default {
   },
   methods: {
     onPlay: function(isPlaying) {
-      if (!isPlaying) {
-        this.onFrameChange(this.$refs.hires.getFrame());
+      if (isPlaying) {
+        this.$refs.lores.play();
+      } else {
+        this.$refs.lores.pause();
       }
+      this.onFrameChange(this.$refs.hires.getFrame());
     },
     onLowresFrameChange: function(frame) {
       this.frameLowres = frame;
     },
     onFrameChange: function(frame) {
-      const query = new URLSearchParams(location.search);
-      query.set("fn", frame);
-      history.pushState(null, null, "?" + query.toString());
       this.frame = frame;
       this.timecode = this.$refs.hires.getTapeTimecode();
       if (this.$refs.hires.isPlaying()) {
@@ -76,9 +76,6 @@ export default {
     },
     updateSlider: function(e) {
       this.slider = e.offsetX / this.$refs.app.clientWidth * 100;
-      const query = new URLSearchParams(location.search);
-      query.set("slider", "" + Math.round(this.slider * 10000) / 10000);
-      history.pushState(null, null, "?" + query.toString());
     },
     onVideoSize: function(width, height) {
       this.videoWidth = width;
@@ -86,27 +83,37 @@ export default {
     }
   },
   mounted: function() {
+    setInterval(() => {
+      // eslint-disable-next-line no-console
+      const query = new URLSearchParams(location.search);
+      const oldQuery = query.toString();
+      query.set("fn", this.frame);
+      query.set("slider", "" + Math.round(this.slider * 10000) / 10000);
+      if (query.toString() !== oldQuery) {
+        history.pushState(null, null, "?" + query.toString());
+      }
+    }, 400);
     this.$refs.hires.video.addEventListener("click", (e) => {
       e.preventDefault();
     });
-    this.$refs.app.addEventListener("mousemove", (e) => {
+    this.$refs.app.addEventListener("mousemove", function(e) {
       if (this.sliding) {
         this.updateSlider(e);
       }
-    });
-    window.addEventListener("mouseup", (e) => {
+    }.bind(this));
+    window.addEventListener("mouseup", function (e) {
       this.sliding = false;
       this.updateSlider(e);
-    });
+    }.bind(this));
     this.$refs.app.addEventListener("mousedown", (e) => {
       this.sliding = true;
       this.updateSlider(e);
     });
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", function (e) {
       if(e.key.toLowerCase().indexOf("arrow") >= 0) {
         e.preventDefault();
       }
-    });
+    }.bind(this));
   }
 }
 </script>
