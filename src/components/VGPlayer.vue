@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div ref="container" id="container"></div>
+        <div ref="container" id="container" v-bind:class="{noControls: !this.controls}"></div>
         <div ref="overlay" id="overlay">
             <slot name="overlay"></slot>
         </div>
@@ -63,6 +63,13 @@
         mounted: function () {
             this.player = new window.VG.Player(this.$refs.container, {hotkeys: this.$props.hotkeys, theme: "vg"});
             this.video = this.$refs.container.querySelector("video");
+            const controlsContainer = this.$refs.container.querySelector(".vg_allControls");
+
+            this.$refs.container.querySelectorAll("video").forEach((videoEl) => {
+                videoEl.playsInline = true;
+                videoEl.disablePictureInPicture = true;
+                videoEl.muted = true;
+            });
 
             this.player.loadUrl(this.$props.url, (err) => {
                 this.$emit("loadUrl", err);
@@ -81,12 +88,18 @@
             const player = this.player;
             const video = this.video;
 
+            controlsContainer.addEventListener("mousedown", (e) => {
+                e.stopPropagation();
+            });
+
+            controlsContainer.addEventListener("touchstart", (e) => {
+                e.stopPropagation();
+            });
+
             video.addEventListener("resize", () => {
                 resizeOverlay(this.$refs.overlay, video);
                 this.$emit("videoSize", video.videoWidth, video.videoHeight);
             });
-
-            video.controls = this.$props.controls;
 
             video.addEventListener("click", (e) => {
                 e.stopPropagation();
@@ -171,6 +184,10 @@
 </script>
 
 <style scoped>
+    * {
+        user-select: none;
+    }
+
     #overlay {
         position: absolute;
         top: 0;
@@ -194,14 +211,6 @@
         object-fit: fill;
     }
 
-    .vg_player_opacity_0 {
-        pointer-events: none;
-    }
-
-    .vg_time_controls_box, .vg_invisible, .vg_allControls {
-        display: none;
-    }
-
     .vg_captionText:not(:empty) {
         font-family: monospace;
         position: absolute;
@@ -219,5 +228,83 @@
 
     .vg_playerContainer, .vg_embed-container, .vg_player {
         height: 100%;
+    }
+
+    .vg_player_opacity_0 {
+        pointer-events: none;
+    }
+
+    .vg_time_controls_box, .vg_invisible {
+        display: none;
+    }
+
+    .vg_allControls {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background-color: rgba(50,50,50,0.7);
+        backdrop-filter: blur(2px);
+        z-index: 9;
+        transition-property: opacity;
+        transition-duration: 0.2s;
+        opacity: 1;
+    }
+
+    .noControls .vg_allControls {
+        display: none;
+    }
+
+    .vg_time_controls, .vg_proPanel__toggle, .vg_controls--addOn, .vg_timevalues, .vg_proPanel, .vg_playBackButton, .vg_playFasterButton, .vg_proPanel__left, .vg_ddown__content {
+        display: none;
+    }
+
+    .vg_playPauseButton {
+        cursor: pointer;
+        filter: invert(1);
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+    .vg_icon-play {
+        display: block;
+        width: 20px;
+        height: 20px;
+        background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCI+CiAgPHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBkPSJNMy4yNDMsMTUuMTU1YzAsMC44NDUsMC41OTMsMS4xNTcsMS4zMTcsMC43MDdsOS42NTktNi4wNDFjMC43MjctMC40NTMsMC43MjItMS4xOTMsMC0xLjY0NUw0LjU1NiwyLjEzNwogICAgQzMuODI3LDEuNjgyLDMuMjM3LDIuMDE0LDMuMjM3LDIuODQ0djEyLjMxMkgzLjI0M3oiLz4KPC9zdmc+);
+    }
+
+    .vg_playing .vg_icon-play {
+        background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOHB4IiBoZWlnaHQ9IjE4cHgiIHZpZXdCb3g9IjAgMCAxOCAxOCI+CiAgPHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBkPSJNNi4wMDIsMS45NTNDNS4xNzIsMS45NTMsNC41LDIuNjI2LDQuNSwzLjQ1NXYxMS4wOAogICAgICAgIGMwLDAuODMsMC42NzIsMS41MDIsMS41MDIsMS41MDJjMC44MjksMCwxLjUwMi0wLjY3MiwxLjUwMi0xLjUwMlYzLjQ1NUM3LjUwNCwyLjYyNiw2LjgzMSwxLjk1Myw2LjAwMiwxLjk1M3ogTTEyLDEuOTUzCiAgICAgICAgYy0wLjgyOCwwLTEuNSwwLjY3Mi0xLjUsMS41djExLjA5NGMwLDAuODI4LDAuNjcyLDEuNSwxLjUsMS41czEuNS0wLjY3MiwxLjUtMS41VjMuNDUzQzEzLjUsMi42MjUsMTIuODI4LDEuOTUzLDEyLDEuOTUzeiIvPgo8L3N2Zz4KCg==);
+    }
+
+    .vg_timescrubber__wrap {
+        background-color: black;
+        display: block;
+        position: absolute;
+        left: 40px;
+        right: 10px;
+        top: 15px;
+    }
+
+    .vg_scrubber__buffered div {
+        background-color: gray;
+        display: block;
+        position: absolute;
+    }
+
+    .vg_scrubber__played {
+        background-color: white;
+        display: block;
+        position: absolute;
+    }
+
+    .vg_timescrubber__wrap, .vg_scrubber__buffered div, .vg_scrubber__played {
+        height: 10px;
     }
 </style>

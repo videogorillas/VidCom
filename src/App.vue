@@ -15,7 +15,7 @@
     <div class="divider"
          v-bind:style="{left: slider + `%`}"></div>
     <div class="lowres_container"
-         v-bind:style="{clipPath: `inset(0 0 0 ` + slider + `%)`}">
+         v-bind:style="{webkitClipPath: `inset(0 0 0 ` + slider + `%)`, clipPath: `inset(0 0 0 ` + slider + `%)`}">
       <VGPlayer ref="lores"
                 class="lowres"
                 :url="`${url2}`"
@@ -75,7 +75,7 @@ export default {
       this.$refs.lores.seekFrame(frame);
     },
     updateSlider: function(e) {
-      this.slider = e.offsetX / this.$refs.app.clientWidth * 100;
+      this.slider = (e.pageX - this.$refs.app.getBoundingClientRect().left) / this.$refs.app.clientWidth * 100;
     },
     onVideoSize: function(width, height) {
       this.videoWidth = width;
@@ -84,7 +84,6 @@ export default {
   },
   mounted: function() {
     setInterval(() => {
-      // eslint-disable-next-line no-console
       const query = new URLSearchParams(location.search);
       const oldQuery = query.toString();
       query.set("fn", this.frame);
@@ -96,19 +95,28 @@ export default {
     this.$refs.hires.video.addEventListener("click", (e) => {
       e.preventDefault();
     });
-    this.$refs.app.addEventListener("mousemove", function(e) {
+    const onSlide = function(e) {
       if (this.sliding) {
         this.updateSlider(e);
       }
-    }.bind(this));
-    window.addEventListener("mouseup", function (e) {
+      e.preventDefault();
+    }.bind(this);
+    this.$refs.app.addEventListener("mousemove", onSlide);
+    this.$refs.app.addEventListener("touchmove", onSlide);
+    const stopSliding = function (e) {
+      if (this.sliding) {
+        this.updateSlider(e);
+      }
       this.sliding = false;
-      this.updateSlider(e);
-    }.bind(this));
-    this.$refs.app.addEventListener("mousedown", (e) => {
+    }.bind(this);
+    window.addEventListener("mouseup", stopSliding);
+    window.addEventListener("touchend", stopSliding);
+    const startSliding = (e) => {
       this.sliding = true;
       this.updateSlider(e);
-    });
+    };
+    this.$refs.app.addEventListener("mousedown", startSliding);
+    this.$refs.app.addEventListener("touchstart", startSliding);
     window.addEventListener("keydown", function (e) {
       if(e.key.toLowerCase().indexOf("arrow") >= 0) {
         e.preventDefault();
@@ -135,16 +143,13 @@ export default {
   }
 
   .divider {
+    pointer-events: none;
     position: absolute;
     width: 1px;
     border-left: 1px solid black;
     height: 100%;
     z-index: 1;
     top: 0;
-  }
-
-  .hires video::-webkit-media-controls {
-    z-index: 2;
   }
 
   .timecode {
